@@ -18,8 +18,8 @@ import java.util.TimeZone;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Weather {
 
-    private String weatherMain;
-    private double mainTemperature;
+    private String currentWeather;
+    private double currentTemperature;
     @JsonProperty("timezone")
     private int timestamp;
     @JsonProperty("sunset")
@@ -30,12 +30,12 @@ public class Weather {
     @JsonProperty("weather")
     public void setWeather(List<Map<String, Object>> weatherEntries) {
         Map<String, Object> weather = weatherEntries.get(0);
-        setWeatherMain((String) weather.get("main"));
+        setCurrentWeather((String) weather.get("main"));
     }
 
     @JsonProperty("main")
     public void setTemperature(Map<String, Object> main) {
-        setMainTemperature((Double) main.get("temp"));
+        setCurrentTemperature((Double) main.get("temp"));
     }
 
     public void setSunset(int sunset) {

@@ -1,53 +1,43 @@
 package Oleksandr.Turchanovskyi.controllers;
 
-import Oleksandr.Turchanovskyi.model.Weather;
-import Oleksandr.Turchanovskyi.model.WeatherURL;
+import Oleksandr.Turchanovskyi.model.WeatherData;
+import Oleksandr.Turchanovskyi.serviceImpl.WeatherDataServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Objects;
+import java.net.URISyntaxException;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/weather")
 public class WeatherController {
 
-    private final RestTemplate restTemplate;
-    private final WeatherURL weatherURL;
+    private final WeatherDataServiceImpl weatherDataService;
 
-
-    public WeatherController(RestTemplate restTemplate, WeatherURL weatherURL) {
-        this.restTemplate = restTemplate;
-        this.weatherURL = weatherURL;
+    public WeatherController(WeatherDataServiceImpl weatherDataService) {
+        this.weatherDataService = weatherDataService;
     }
 
+    @GetMapping
+    public Iterable<WeatherData> fetchWeather() {
+        return weatherDataService.findAll();
+    }
+
+    @Scheduled(cron = "0 0 1 * * *", zone = "Europe/Warsaw")
     @PostMapping
-    public ResponseEntity<Weather> getWeather() throws JsonProcessingException {
+    @ResponseStatus(HttpStatus.OK)
+    public void getWeather() throws JsonProcessingException {
 
-        String city = "Kraków";
+        weatherDataService.save();
 
-        UriComponents uriComponents = UriComponentsBuilder
-                .newInstance()
-                .scheme("http")
-                .host(weatherURL.getUrl())
-                .path("")
-                .query("q={keyword}&appid={appid}&units=metric")
-                .buildAndExpand(city, weatherURL.getApiKey());
+        log.info("The Weather in Krakow was updated");
+    }
 
-        String uri = uriComponents.toUriString();
-
-        ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, null, String.class);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        Weather weather = objectMapper.readValue(Objects.requireNonNull(responseEntity.getBody()), Weather.class);
-
-
-        return ResponseEntity.ok().body(weather);
+    @PostMapping(value = "/send")
+    public String sendJSON() throws URISyntaxException {
+        return weatherDataService.send();
     }
 }
