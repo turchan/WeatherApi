@@ -10,5 +10,5 @@ public interface WeatherDataService {
     Iterable<WeatherData> findAll();
     Optional<WeatherData> findByTimeStamp(int timestamp);
     WeatherData save() throws JsonProcessingException;
-    String send() throws URISyntaxException;
+    String send() throws URISyntaxException, JsonProcessingException;
 }

@@ -6,13 +6,14 @@ import Oleksandr.Turchanovskyi.model.WeatherURL;
 import Oleksandr.Turchanovskyi.repository.WeatherDataRepository;
 import Oleksandr.Turchanovskyi.service.WeatherDataService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -97,7 +98,7 @@ public class WeatherDataServiceImpl implements WeatherDataService {
     public String send() throws URISyntaxException {
 
         final String baseUrl = "https://us-central1-brep-playground.cloudfunctions.net/talent";
-        //final String baseUrl = "http://localhost:8080/weather";
+        //final String baseUrl = "http://localhost:8080/get";
         URI uri = new URI(baseUrl);
 
         Iterable<WeatherData> weatherData = weatherDataRepository.findAll();
@@ -105,9 +106,6 @@ public class WeatherDataServiceImpl implements WeatherDataService {
         HttpEntity<String> request = new HttpEntity<>(weatherData.toString());
 
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(uri, request, String.class);
-
-        //ObjectMapper objectMapper = new ObjectMapper();
-        //JsonNode jsonNode = objectMapper.readTree(Objects.requireNonNull(responseEntity.getBody()));
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             return "Request Successful " + responseEntity.getStatusCode();

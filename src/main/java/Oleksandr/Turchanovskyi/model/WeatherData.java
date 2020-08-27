@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class WeatherData {
 
     @Id

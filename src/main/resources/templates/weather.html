@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>WeatherData</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+
+<body>
+<div class="container">
+    <h1 align="center">Weather Data in Krakow</h1>
+    <table id="table" style="width:100%">
+        <tr th:each="weather: ${weatherData}" >
+            <td>CurrentWeather: <span th:text="${weather.currentWeather}"></span></td>
+            <td>CurrentTemperature: <span th:text="${weather.currentTemperature}"></span></td>
+            <td>Timestamp: <span th:text="${weather.timestamp}"></span></td>
+            <td>Timestamp: <span th:text="${weather.sunset}"></span></td>
+            <td>Timestamp: <span th:text="${weather.sunrise}"></span></td>
+        </tr>
+    </table>
+
+    <form method="POST" th:action="@{/}">
+        <button type="submit" name="submit" value="value" class="btn btn-primary btn-lg btn-block" style="margin: 2px; margin-top: 5px">Make and Save new information</button>
+    </form>
+
+    <form method="POST" th:action="@{/send}">
+        <button type="submit" name="submit" value="value" class="btn btn-primary btn-lg btn-block" style="margin: 2px">Send JSON</button>
+    </form>
+</div>
+</body>
+</html>
