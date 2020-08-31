@@ -7,6 +7,7 @@ import Oleksandr.Turchanovskyi.repository.WeatherDataRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -42,11 +43,12 @@ class WeatherDataServiceTest {
     @InjectMocks
     private WeatherDataServiceImpl weatherDataService;
 
-    @Test
-    void findAll() {
+    private List<WeatherData> list = new ArrayList<>();
+    private WeatherData weatherData;
 
-        List<WeatherData> list = new ArrayList<>();
-        WeatherData weatherData1 = new WeatherData.Builder()
+    @BeforeEach
+    void setUp() {
+        weatherData = new WeatherData.Builder()
                 .setId(null)
                 .setCurrentWeather("Clouds")
                 .setCurrentTemperature(36.6)
@@ -55,7 +57,11 @@ class WeatherDataServiceTest {
                 .setSunrise("2020-08-27 18:35:39")
                 .build();
 
-        list.add(weatherData1);
+        list.add(weatherData);
+    }
+
+    @Test
+    void findAll() {
 
         when(weatherDataRepository.findAll()).thenReturn(list);
 
@@ -67,14 +73,6 @@ class WeatherDataServiceTest {
 
     @Test
     void findByTimeStamp() {
-        WeatherData weatherData = new WeatherData.Builder()
-                .setId(null)
-                .setCurrentWeather("Clouds")
-                .setCurrentTemperature(36.6)
-                .setTimestamp(7200)
-                .setSunset("2020-08-27 04:48:20")
-                .setSunrise("2020-08-27 18:35:39")
-                .build();
 
         doReturn(Optional.of(weatherData)).when(weatherDataRepository).findByTimestamp(weatherData.getTimestamp());
 
@@ -107,14 +105,6 @@ class WeatherDataServiceTest {
         Optional<WeatherData> optionalWeatherData = weatherDataRepository.findByTimestamp(weather.getTimestamp());
 
         if (optionalWeatherData.isPresent()) {
-            WeatherData weatherData = new WeatherData.Builder()
-                    .setId(null)
-                    .setCurrentWeather("Clouds")
-                    .setCurrentTemperature(36.6)
-                    .setTimestamp(7200)
-                    .setSunset("2020-08-27 04:48:20")
-                    .setSunrise("2020-08-27 18:35:39")
-                    .build();
 
             doReturn(weatherData).when(weatherDataRepository).save(any());
 
