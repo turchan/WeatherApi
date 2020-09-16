@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+      
+  api-mongodb:
+    image: mongo
+    restart: always
+    volumes:
+        - ./weatherdataapi:/data/weatherdataapi
+    ports: 
+        - "27017:27017"
+       
+  apiweather:
+    image: apiweather
+    ports:
+      - "8080:8080"
+    links:
+      - api-mongodb
